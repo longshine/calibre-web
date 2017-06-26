@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<!--/*/<th:block th:replace="index :: meta">/*/-->
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!--/*/</th:block>/*/-->
+	<title>Publishers - [[${publisher.name}]]</title>
+	<!--/*/<th:block th:replace="index :: style">/*/-->
+	<link rel="stylesheet" href="../../static/css/vendor/bootstrap.min.css" />
+	<link rel="stylesheet" href="../../assets/css/app.css" />
+	<!--/*/</th:block>/*/-->
+</head>
+<body>
+	<header th:replace="index :: #header (module = 'tag')"></header>
+	<main id="main" class="container"
+		th:with="navUrl=${@currentUrlWithoutParams.apply({ 'page', 'sort', 'asc' })}, view=${param.view} ? ${param.view[0]}, sort=${param.sort} ? ${param.sort[0]}, asc=${param.asc} ? ${param.asc[0]}, q=${param.q} ? ${param.q[0]}">
+		<ol class="breadcrumb">
+			<li><a href="../index.html" th:href="@{/}">首页</a></li>
+			<li><a href="publishers.html" th:href="@{/explore/publishers}">出版</a></li>
+			<li th:classappend="not ${q} ? 'active'"><a th:href="@{/explore/publishers/{id}(id=${publisher.id})}" th:remove="${q} ? none : tag" th:text="${publisher.name}">出版</a></li>
+			<li class="active" th:if="${q}">搜索 <span th:text="${q}"></span></li>
+		</ol>
+		<div th:replace="books :: toolbar"></div>
+		<ul th:replace="books :: books"></ul>
+	</main>
+	<footer th:replace="index :: #footer"></footer>
+	<th:block th:replace="index :: js"></th:block>
+	<script type="text/javascript">
+	$(function() {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+	</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<!--/*/<th:block th:replace="index :: meta">/*/-->
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!--/*/</th:block>/*/-->
+	<title>Books</title>
+	<!--/*/<th:block th:replace="index :: style">/*/-->
+	<link rel="stylesheet" href="../static/css/vendor/bootstrap.min.css" />
+	<link rel="stylesheet" href="../assets/css/app.css" />
+	<!--/*/</th:block>/*/-->
+</head>
+<body>
+	<header th:replace="index :: #header (module = 'explore')"></header>
+	<main id="main" class="container"
+		th:with="navUrl=${@currentUrlWithoutParams.apply({ 'page', 'sort', 'asc' })}, view=${param.view} ? ${param.view[0]}, sort=${param.sort} ? ${param.sort[0]}, asc=${param.asc} ? ${param.asc[0]}, q=${param.q} ? ${param.q[0]}">
+		<ol class="breadcrumb">
+			<li><a href="../index.html" th:href="@{/}">首页</a></li>
+			<li th:classappend="not ${q} ? 'active'"><a th:href="@{/books}" th:remove="${q} ? none : tag">书库</a></li>
+			<li class="active" th:if="${q}">搜索 <span th:text="${q}"></span></li>
+		</ol>
+		<div class="filter clearfix" th:fragment="toolbar">
+			<div class="f-view btn-group btn-group-sm hidden-xs"
+				th:with="viewUrl=${@currentUrlWithoutParam.apply('view')}, view=not ${#strings.isEmpty(view)} ? ${view} : 'cards'">
+				<a class="btn btn-default"
+					th:classappend="${view} eq 'thumbs' ? 'active'"
+					th:href="@{${viewUrl}(view='thumbs')}">
+					<i class="glyphicon glyphicon-th"></i>
+					<span class="sr-only">Thumb</span>
+				</a>
+				<a class="btn btn-default"
+					th:classappend="${view} eq 'cards' ? 'active'"
+					th:href="@{${viewUrl}(view='cards')}">
+					<i class="glyphicon glyphicon-th-list"></i>
+					<span class="sr-only">Card</span>
+				</a>
+				<a class="btn btn-default"
+					th:classappend="${view} eq 'list' ? 'active'"
+					th:href="@{${viewUrl}(view='list')}">
+					<i class="glyphicon glyphicon-list"></i>
+					<span class="sr-only">List</span>
+				</a>
+			</div>
+			<div class="f-sort btn-group btn-group-sm hidden-xs" th:with="sort=not ${#strings.isEmpty(sort)} ? ${sort} : 'time'">
+				<a class="btn btn-default" th:classappend="${sort} eq 'time' ? 'active'"
+					th:href="@{${navUrl}(sort='time',asc=not ${asc} and ${sort} eq 'time')}">
+					收录时间 <i class="glyphicon" th:if="${sort} eq 'time'"
+						th:classappend="${asc} ? 'glyphicon-arrow-up' : 'glyphicon-arrow-down'"></i>
+				</a>
+				<a class="btn btn-default" th:classappend="${sort} eq 'pub' ? 'active'"
+					th:href="@{${navUrl}(sort='pub',asc=not ${asc} and ${sort} eq 'pub')}">
+					出版时间 <i class="glyphicon" th:if="${sort} eq 'pub'"
+						th:classappend="${asc} ? 'glyphicon-arrow-up' : 'glyphicon-arrow-down'"></i>
+				</a>
+				<a class="btn btn-default" th:classappend="${sort} eq 'title' ? 'active'"
+					th:href="@{${navUrl}(sort='title',asc=not ${asc} and ${sort} eq 'title')}">
+					标题 <i class="glyphicon" th:if="${sort} eq 'title'"
+						th:classappend="${asc} ? 'glyphicon-arrow-up' : 'glyphicon-arrow-down'"></i>
+				</a>
+			</div>
+			<form class="f-search">
+				<div class="input-group input-group-sm">
+					<input type="text" name="q" class="form-control" th:value="${param.q} ? ${param.q[0]}" placeholder="在当前结果中搜索"/>
+					<span class="input-group-btn">
+						<button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+					</span>
+				</div>
+				<input type="hidden" name="view" th:value="${view}" th:if="${view}"/>
+			</form>
+			<ul class="f-pager pagination pagination-sm" th:if="${books} and ${books.numberOfElements}" th:object="${books}"
+				th:with="pageUrl=${@currentUrlWithoutParam.apply('p')}">
+				<li class="disabled">
+					<span><em>[[${books.number}]] / [[${books.totalPages}]]</em></span>
+				</li>
+				<li th:classappend="*{number} le 1 ? 'disabled'">
+					<a aria-label="上一页" th:remove="*{number} le 1 ? 'tag' : 'none'" th:href="@{${pageUrl}(p=*{number} - 1)}">
+						<span aria-hidden="true">&nbsp;&larr;&nbsp;</span>
+					</a>
+				</li>
+				<li th:classappend="*{number} ge *{totalPages} ? 'disabled'">
+					<a aria-label="下一页" th:remove="*{number} ge *{totalPages} ? 'tag' : 'none'" th:href="@{${pageUrl}(p=*{number} + 1)}">
+						<span aria-hidden="true">&nbsp;&rarr;&nbsp;</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="alert alert-warning" th:if="not ${books} or ${books.numberOfElements} eq 0">没有相关数据</div>
+		<!--/*/<th:block th:switch="${view}" th:fragment="books">/*/-->
+		<ul th:case="'list'" class="media-list flex-cards flex-cards-list">
+			<li class="media flex-card" th:each="book : ${books}" th:object="${book}">
+				<div class="media-left">
+					<a href="#" th:href="@{/books/{id}(id=*{id})}">
+						<img class="media-object card-thumb" th:src="@{/books/{id}/thumb/120x160(id=*{id})}" th:alt="*{title}" />
+					</a>
+				</div>
+				<div class="media-body card-body">
+					<h3 class="card-title">
+						<a href="#" th:href="@{/books/{id}(id=*{id})}" th:text="*{title}">Title</a>
+						<small th:each="item : *{data}">
+							<a th:href="${#authorization.expression('hasRole(''ROLE_USER'')')} ? @{/books/{id}/{format}/{title}.{format}(id=*{id},format=${#strings.toLowerCase(item.format)},title=*{title})} : @{/login(continue=@{/books/{id}(id=*{id})})}"
+								th:title="${#numbers.formatDecimal(item.uncompressedSize / 1024D / 1024D, 1, 2)} + 'M'"
+								th:text="${item.format}" data-toggle="tooltip" data-placement="right">FORMAT</a>
+						</small>
+					</h3>
+					<div class="card-info">
+						<ul class="list-inline">
+							<li th:each="author : *{authors}" th:object="${author}"><small><a href="#" th:href="@{/explore/authors/{id}(id=*{id})}"th:text="*{name}">author</a></small></li>
+						</ul>
+						<th:block th:if="*{comment}" th:utext="*{#strings.abbreviate(comment.text, 520)}"></th:block>
+					</div>
+					<div class="card-meta">
+						<ul class="list-inline">
+							<li th:each="tag : *{tags}" th:object="${tag}">
+								<small><a href="#" th:href="@{/explore/tags/{id}(id=*{id})}" th:text="*{name}">tag</a></small>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<ul th:case="'thumbs'" class="list-unstyled clearfix flex-cards flex-cards-thumbs">
+			<li class="flex-card" th:each="book : ${books}" th:object="${book}">
+				<a href="#" th:href="@{/books/{id}(id=*{id})}">
+					<img class="card-thumb" th:src="@{/books/{id}/thumb/90x120(id=*{id})}" th:alt="*{title}" />
+				</a>
+				<div class="card-body">
+					<h3 class="card-title">
+						<a href="#" th:href="@{/books/{id}(id=*{id})}" th:text="*{title}">Title</a>
+					</h3>
+					<div class="card-meta">
+						<small th:each="author : *{authors}" th:object="${author}">
+							<a href="#" th:href="@{/explore/authors/{id}(id=*{id})}"th:text="*{name}">author</a>
+						</small>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<ul th:case="*" class="row list-unstyled flex-cards flex-cards-default">
+			<li class="col-sm-6 col-md-4" th:each="book : ${books}" th:object="${book}">
+				<div class="flex-card">
+					<a href="#" th:href="@{/books/{id}(id=*{id})}">
+						<img class="card-thumb" th:src="@{/books/{id}/thumb/90x120(id=*{id})}" th:alt="*{title}" />
+					</a>
+					<div class="card-body">
+						<h3 class="card-title">
+							<a href="#" th:href="@{/books/{id}(id=*{id})}" th:text="*{title}">Title</a>
+						</h3>
+						<div class="card-info">
+							<ul class="list-unstyled list-inline">
+								<li th:each="author : *{authors}" th:object="${author}"><small><a href="#" th:href="@{/explore/authors/{id}(id=*{id})}"th:text="*{name}">author</a></small></li>
+							</ul>
+							<th:block th:if="*{comment}" th:utext="*{comment.text}"></th:block>
+						</div>
+					</div>
+					<div class="card-footer clearfix">
+						<ul class="list-inline pull-left">
+							<li th:each="tag : *{tags}" th:object="${tag}">
+								<small><a href="#" th:href="@{/explore/tags/{id}(id=*{id})}" th:text="*{name}">tag</a></small>
+							</li>
+						</ul>
+						<ul class="list-inline pull-right">
+							<li th:each="item : *{data}">
+								<small>
+									<a th:href="${#authorization.expression('hasRole(''ROLE_USER'')')} ? @{/books/{id}/{format}/{title}.{format}(id=*{id},format=${#strings.toLowerCase(item.format)},title=*{title})} : @{/login(continue=@{/books/{id}(id=*{id})})}"
+										th:title="${#numbers.formatDecimal(item.uncompressedSize / 1024D / 1024D, 1, 2)} + 'M'"
+										th:text="${item.format}" data-toggle="tooltip">FORMAT</a>
+								</small>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<nav th:unless="${noPager}">
+			<ul class="pager" th:object="${books}">
+				<li class="previous" th:classappend="*{number} le 1 ? 'disabled'">
+					<a aria-label="上一页" th:remove="*{number} le 1 ? 'tag' : 'none'" th:href="@{${pageUrl}(p=*{number} - 1)}">
+						<span><span aria-hidden="true">&larr;</span> Previous</span>
+					</a>
+				</li>
+				<li class="next" th:classappend="*{number} ge *{totalPages} ? 'disabled'">
+					<a aria-label="下一页" th:remove="*{number} ge *{totalPages} ? 'tag' : 'none'" th:href="@{${pageUrl}(p=*{number} + 1)}">
+						<span>Next <span aria-hidden="true">&rarr;</span></span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<!--/*/</th:block>/*/-->
+	</main>
+	<footer th:replace="index :: #footer"></footer>
+	<th:block th:replace="index :: js"></th:block>
+	<script type="text/javascript">
+	$(function() {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+	</script>
+</body>
+</html>

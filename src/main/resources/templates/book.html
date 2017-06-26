@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<!--/*/<th:block th:replace="index :: meta">/*/-->
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!--/*/</th:block>/*/-->
+	<title>[[${book.title}]]</title>
+	<!--/*/<th:block th:replace="index :: style">/*/-->
+	<link rel="stylesheet" href="../static/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../assets/css/app.css" />
+	<!--/*/</th:block>/*/-->
+</head>
+<body>
+	<header th:replace="index :: #header (module = 'book')"></header>
+	<main id="main" class="container">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="../index.html" th:href="@{/}">首页</a></li>
+			<li class="breadcrumb-item active" th:text="${book.title}">标签项</li>
+		</ol>
+		<article class="book row" th:object="${book}">
+			<div class="col-sm-4">
+				<img class="img-responsive" th:src="@{/books/{id}/cover(id=*{id})}" th:alt="*{title}"/>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header">
+					<h2 th:text="*{title}">Title</h4>
+				</div>
+				<dl class="dl-horizontal" th:if="*{authors} and *{authors.size()} gt 0">
+					<dt>作者：</dt>
+					<dd th:each="item : *{authors}">
+						<a th:href="@{/explore/authors/{id}(id=${item.id})}" th:text="${item.name}"></a>
+					</dd>
+				</dl>
+				<dl class="dl-horizontal" th:if="*{publishers} and *{publishers.size()} gt 0">
+					<dt>出版：</dt>
+					<dd th:each="item : *{publishers}">
+						<a th:href="@{/explore/publishers/{id}(id=${item.id})}" th:text="${item.name}"></a>
+					</dd>
+				</dl>
+				<dl class="dl-horizontal" th:if="*{pubdate}">
+					<dt>日期：</dt>
+					<dd th:text="*{#strings.substringBefore(pubdate, ' ')}"></dd>
+				</dl>
+				<dl class="dl-horizontal" th:if="*{time}">
+					<dt>收录：</dt>
+					<dd th:text="*{#strings.substringBefore(time, ' ')}"></dd>
+				</dl>
+				<dl class="dl-horizontal" th:if="*{series} and *{series.size()} gt 0">
+					<dt>丛书：</dt>
+					<dd th:each="item : *{series}">
+						<a th:href="@{/explore/series/{id}(id=${item.id})}" th:text="${item.name}"></a>
+					</dd>
+				</dl>
+				<dl class="dl-horizontal" th:if="*{tags} and *{tags.size()} gt 0">
+					<dt>标签：</dt>
+					<dd>
+						<ul class="list-inline">
+							<li th:each="tag : *{tags}">
+								<a th:href="@{/explore/tags/{id}(id=${tag.id})}" th:text="${tag.name}"></a>
+							</li>
+						</ul>
+					</dd>
+				</dl>
+				<dl class="dl-horizontal">
+					<dt>格式：</dt>
+					<dd>
+						<ul class="list-inline">
+							<li th:each="item : *{data}">
+								<a th:href="${#authorization.expression('hasRole(''ROLE_USER'')')} ? @{/books/{id}/{format}/{title}.{format}(id=*{id},format=${#strings.toLowerCase(item.format)},title=*{title})} : @{/login(continue=@{/books/{id}(id=*{id})})}"
+									th:title="${#numbers.formatDecimal(item.uncompressedSize / 1024D / 1024D, 1, 2)} + 'M'"
+									th:text="${item.format}" data-toggle="tooltip">FORMAT</a>
+							</li>
+						</ul>
+						<small class="text-success">点击相应格式下载</small>
+					</dd>
+				</dl>
+				<hr/>
+				<section th:if="*{comment}" th:utext="*{comment.text}"></section>
+			</div>
+		</article>
+	</main>
+	<footer th:replace="index :: #footer"></footer>
+	<th:block th:replace="index :: js"></th:block>
+	<script type="text/javascript">
+	$(function() {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+	</script>
+</body>
+</html>

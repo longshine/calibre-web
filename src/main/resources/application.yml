@@ -1,0 +1,39 @@
+server:
+  port: 80
+
+calibre:
+  library: 
+  thumb: 
+
+lx:
+  context:
+
+hibernate:
+  dialect: org.hibernate.dialect.SQLiteDialect
+
+spring:
+  profiles:
+    active: dev
+  messages:
+    basename: locale/messages
+  mvc:
+    static-path-pattern: /static/**
+  resources:
+    cache-period: 2592000
+  datasource:
+    url: 
+    username: 
+    password: 
+    tomcat:
+      validationQuery: SELECT 1
+      testOnBorrow: true
+      validationInterval: 600000
+      testWhileIdle: true
+      timeBetweenEvictionRunsMillis: 50000
+      minEvictableIdleTimeMillis: 600000
+  jpa:
+    database-platform: org.hibernate.dialect.SQLiteDialect
+  jackson:
+    default-property-inclusion: non-absent
+    mapper:
+      default_view_inclusion: true

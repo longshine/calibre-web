@@ -1,0 +1,191 @@
+body {
+	padding-top: 60px;
+}
+
+.flex-card {
+	margin-bottom: 20px;
+	padding: 8px;
+	position: relative;
+}
+.flex-card.unapproved {
+	border-color: #f0ad4e;
+}
+.flex-card.disapproved {
+	border-color: #d9534f;
+}
+.flex-card .label {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.card-title {
+	font-size: 14px;
+	margin-top: 0;
+}
+.card-thumb {
+	max-width: 100%;
+}
+.card-meta {
+	color: #888;
+}
+.card-body p:last-child {
+	margin-bottom: 0;
+}
+.card-footer {
+	color: #999;
+	clear: both;
+}
+a.card-stat {
+	color: #888;
+	font-weight: bold;
+}
+a.card-stat:hover {
+	color: #337ab7;
+	text-decoration: none;
+}
+.flex-cards-default .flex-card,
+.flex-card-default {
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	transition: border .2s ease-in-out;
+}
+.flex-cards-default .flex-card:hover,
+.flex-card-default:hover {
+	border-color: #68c04a;
+}
+.flex-cards-default .flex-card .card-thumb,
+.flex-card-default .card-thumb {
+	display: block;
+	float: left;
+	width: 90px;
+	height: 120px;
+	margin-right: 8px;
+}
+.flex-cards-default .flex-card .card-info,
+.flex-card-default .card-info {
+	height: 90px;
+	overflow: auto;
+}
+.flex-cards-default .flex-card .card-title,
+.flex-cards-default .flex-card .card-meta,
+.flex-card-default .card-title,
+.flex-card-default .card-meta {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.flex-cards-default .flex-card .card-footer,
+.flex-card-default .card-footer {
+	border-top: 1px dashed #eee;
+	margin-top: 8px;
+	padding-top: 8px;
+}
+.flex-cards-thumbnails .flex-card .card-body,
+.flex-card-thumbnail .card-body {
+	color: #333;
+	padding: 8px;
+}
+.flex-cards-list .flex-card,
+.flex-card-li {
+	margin-top: 20px;
+	margin-bottom: 0;
+	padding: 0 0 20px;
+}
+.flex-cards-list .flex-card:first-child,
+.flex-card-li:first-child {
+	margin-top: 0;
+}
+.flex-cards-list .flex-card .card-thumb,
+.flex-card-li .card-thumb {
+	/*max-width: 64px;*/
+	max-width: none;
+	width: 120px;
+	height: 160px;
+}
+.flex-cards-list .media {
+	border-bottom: 1px solid #eee;
+}
+.flex-cards-list .flex-card .card-footer,
+.flex-card-li .card-footer {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+.flex-cards-list .flex-card .card-stat,
+.flex-card-li .card-stat {
+	margin-left: 8px;
+}
+.flex-cards-thumbs .flex-card,
+.flex-card-thumb {
+	border: 1px solid transparent;
+	float: left;
+	margin-right: 30px;
+	width: 160px;
+}
+.flex-cards-thumbs .flex-card:hover,
+.flex-card-thumb:hover {
+	border-color: #68c04a;
+}
+.flex-cards-thumbs .flex-card .card-thumb,
+.flex-card-thumb .card-thumb {
+	width: 90px;
+	height: 120px;
+}
+.flex-cards-thumbs .flex-card .card-title,
+.flex-card-thumb .card-title {
+	line-height: 20px;
+	margin-top: 0.8em;
+	margin-bottom: 0;
+}
+.flex-cards-thumbs .flex-card .card-title,
+.flex-cards-thumbs .flex-card .card-meta {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.flex-cards-no-border .flex-card,
+.flex-card-no-border {
+	border: none !important;
+}
+
+.filter {
+	background-color: #f5f5f5;
+	padding: 8px 15px;
+	margin-bottom: 20px;
+}
+.filter .f-view, .filter .f-sort, .filter .f-search {
+	float: left;
+}
+.filter .f-view, .filter .f-sort {
+	margin-right: 8px;
+}
+.filter .f-search {
+	max-width: 200px;
+}
+.filter .f-pager {
+	margin: 0;
+	float: right;
+}
+
+@media (max-width: 399px) {
+.filter .f-search {
+	max-width: unset;
+	margin-bottom: 8px;
+}
+}
+
+.book .page-header {
+	margin-top: 0;
+}
+.book .dl-horizontal ul {
+	margin-bottom: 0;
+}
+@media (min-width: 767px) {
+.book .dl-horizontal dt {
+	text-align: left;
+	width: 4em;
+}
+.book .dl-horizontal dd {
+	margin-left: 4.2em;
+}
+}

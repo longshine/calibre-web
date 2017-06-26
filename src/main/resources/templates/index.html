@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<!--/*/<th:block th:fragment="meta">/*/-->
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="for" content="zzj only" />
+	<!--/*/</th:block>/*/-->
+	<title>书库</title>
+	<!--/*/<th:block th:fragment="style">/*/-->
+	<link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/static/css/bootstrap.min.css}" />
+	<link rel="stylesheet" href="../static/css/app.css" th:href="@{/static/css/app.css}" />
+	<link rel="assets" th:href="@{/static/}" />
+	<!--/*/</th:block>/*/-->
+</head>
+<body>
+	<header id="header">
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#" th:href="@{/}">书库</a>
+				</div>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="nav navbar-nav">
+						<li th:classappend="${module} eq 'explore' ? 'active'">
+							<a href="books.html" th:href="@{/books}">全部</a>
+						</li>
+						<li th:classappend="${module} eq 'author' ? 'active'">
+							<a href="explore/authors.html" th:href="@{/explore/authors}">作者</a>
+						</li>
+						<li th:classappend="${module} eq 'tag' ? 'active'">
+							<a href="explore/tags.html" th:href="@{/explore/tags}">标签</a>
+						</li>
+						<li th:classappend="${module} eq 'series' ? 'active'">
+							<a href="explore/series.html" th:href="@{/explore/series}">丛书</a>
+						</li>
+						<li th:classappend="${module} eq 'publisher' ? 'active'">
+							<a href="explore/publishers.html" th:href="@{/explore/publishers}">出版</a>
+						</li>
+					</ul>
+					<div class="navbar-right">
+						<form class="navbar-form navbar-left" method="get" th:action="@{/books}" th:unless="${module} eq 'explore' or ${module} eq null">
+							<div class="form-group">
+								<input name="q" class="form-control" type="text" placeholder="Search" th:value="${param.q} ? ${param.q[0]}" />
+							</div>
+							<button class="btn btn-success" type="submit">Search</button>
+						</form>
+						<p class="navbar-text" sec:authorize="hasRole('ROLE_USER')">Welcome, <strong th:text="${#authentication.name}"></strong></p>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</header>
+	<div class="container" role="main">
+		<div class="row" style="margin-top: 80px; margin-bottom: 80px;">
+			<div class="col-sm-8 col-sm-offset-2">
+				<form method="get" th:action="@{/books}">
+					<div class="input-group input-group-lg">
+						<input name="q" type="text" class="form-control" placeholder="Search for..." />
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="submit">Go!</button>
+						</span>
+					</div>
+				</form>
+			</div>
+		</div>
+		<ul th:replace="books :: books (view='thumbs', noPager=true)"></ul>
+	</div>
+	<footer id="footer" role="contentinfo" th:fragment="footer"></footer>
+	<th:block th:fragment="js">
+	<script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}"></script>
+	</th:block>
+</body>
+</html>

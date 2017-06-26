@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<!--/*/<th:block th:replace="index :: meta">/*/-->
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!--/*/</th:block>/*/-->
+	<title>Publishers</title>
+	<!--/*/<th:block th:replace="index :: style">/*/-->
+	<link rel="stylesheet" href="../../static/css/vendor/bootstrap.min.css" />
+	<link rel="stylesheet" href="../../assets/css/app.css" />
+	<!--/*/</th:block>/*/-->
+	<link rel="stylesheet" href="../../static/css/jqcloud.min.css" th:href="@{/static/css/jqcloud.min.css}" />
+</head>
+<body>
+	<header th:replace="index :: #header (module = 'publisher')"></header>
+	<main id="main" class="container">
+		<ol class="breadcrumb">
+			<li><a href="../index.html" th:href="@{/}">首页</a></li>
+			<li class="active">出版</li>
+		</ol>
+		<div id="author-cloud"></div>
+	</main>
+	<footer th:replace="index :: #footer"></footer>
+	<th:block th:replace="index :: js"></th:block>
+	<script type="text/javascript" th:src="@{/static/js/jqcloud.min.js}"></script>
+	<script type="text/javascript" th:inline="javascript">
+	$(function() {
+		var publishers = /*[[${publishers}]]*/ [], url = /*[[@{/explore/publishers/}]]*/ '';
+		var words = $.map(publishers, function(item) {
+			return {
+				text: item.name,
+				weight: item.count,
+				link: url + item.id
+			};
+		});
+		var $cloud = $('#author-cloud');
+		$cloud.css('height', $(window).height() - $cloud.offset().top)
+			.jQCloud(words, { autoResize: true });
+	});
+	</script>
+</body>
+</html>

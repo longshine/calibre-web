@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>模板组件</title>
+</head>
+<body>
+	<main>
+		<div class="container">
+			<h2>分页</h2>
+			<nav th:fragment="pager (page)">
+				<ul class="pagination pagination-green" th:classappend="${paginationClass} ? ${paginationClass}" th:if="${page} and ${page.totalPages}" th:object="${page}" th:with="pagingUrl=(${@currentUrlWithoutParam.apply('p')}), pgShowCount=10, pgCurPos=3, pgEnd=${#object.number + (pgShowCount - pgCurPos)}, pgEnd=${pgEnd gt #object.totalPages ? #object.totalPages : pgEnd}, pgStart=${pgEnd eq #object.totalPages ? (#object.totalPages - pgShowCount + 1) : (#object.number - pgCurPos + 1)}, pgStart=${pgStart lt 1 ? 1 : pgStart}, pgEnd = ${pgStart gt pgEnd ? pgStart : pgEnd}">
+					<li class="disabled">
+						<span><em title="总数" th:title="#{com.pager.total}" th:text="*{totalElements}">64</em></span>
+					</li>
+					<li th:if="${pgStart gt 1}">
+						<a href="#" th:href="@{${pagingUrl}(p=1)}" title="第一页" aria-label="第一页" th:title="#{com.pager.first}" th:attr="aria-label=#{com.pager.first}">1...</a>
+					</li>
+					<li th:if="*{number gt 1}">
+						<a href="#" th:href="@{${pagingUrl}(p=*{number - 1})}" title="上一页" aria-label="上一页" th:title="#{com.pager.prev}" th:attr="aria-label=#{com.pager.prev}"><span aria-hidden="true">&laquo;</span></a>
+					</li>
+					<li th:each="i : ${#numbers.sequence(pgStart, pgEnd)}" th:class="${#object.number eq i} ? 'active'">
+						<a href="#" th:href="@{${pagingUrl}(p=${i})}"><span th:text="${i}">1</span> <span class="sr-only" th:if="${#object.number eq i}" th:text="#{com.pager.currentPage}">(current)</span></a>
+					</li>
+					<li th:if="*{number lt totalPages}">
+						<a href="#" th:href="@{${pagingUrl}(p=*{number + 1})}" title="下一页" aria-label="下一页" th:title="#{com.pager.next}" th:attr="aria-label=#{com.pager.next}"><span aria-hidden="true">&raquo;</span></a>
+					</li>
+					<li th:if="${pgEnd lt #object.totalPages}">
+						<a href="#" th:href="@{${pagingUrl}(p=*{totalPages})}" title="最后一页" aria-label="最后一页" th:title="#{com.pager.last}" th:attr="aria-label=#{com.pager.last}" th:inline="text">...[[*{totalPages}]]</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</main>
+</body>
+</html>
